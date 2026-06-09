@@ -8,59 +8,80 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Russo+One&display=swap" rel="stylesheet">
 <style>
 :root {
-  --color-bg: #0f1117;
-  --color-surface: #1a1d27;
-  --color-surface-2: #222637;
-  --color-border: rgba(255,255,255,0.08);
-  --color-text: #e8eaf6;
-  --color-text-muted: #8890b0;
-  --color-primary: #7c3aed;
-  --color-primary-hover: #6d28d9;
-  --color-accent: #f59e0b;
-  --color-green: #10b981;
-  --color-red: #ef4444;
-  --color-blue: #3b82f6;
-  --color-pink: #ec4899;
-  --color-cyan: #06b6d4;
-  --color-orange: #f97316;
+  --color-bg: #101318;
+  --color-surface: #181d24;
+  --color-surface-2: #202734;
+  --color-surface-3: #273142;
+  --color-border: rgba(255,255,255,0.10);
+  --color-text: #eef2ff;
+  --color-text-muted: #97a3bd;
+  --color-primary: #4f98a3;
+  --color-primary-hover: #227f8b;
+  --color-accent: #e8af34;
+  --color-green: #6daa45;
+  --color-red: #d16363;
+  --color-blue: #5591c7;
+  --color-pink: #c36be0;
+  --color-cyan: #54c7d3;
+  --color-orange: #f29a4a;
   --font-display: 'Russo One', sans-serif;
   --font-body: 'Nunito', sans-serif;
-  --radius-sm: 6px;
+  --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-xl: 24px;
-  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
-  --transition: 200ms cubic-bezier(0.16,1,0.3,1);
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.18);
+  --shadow-md: 0 10px 26px rgba(0,0,0,0.28);
+  --shadow-lg: 0 22px 60px rgba(0,0,0,0.42);
+  --transition: 180ms cubic-bezier(0.16,1,0.3,1);
+  --board-scale: 1;
+  --board-max-size: 760;
 }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; overflow: hidden; }
+
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  text-size-adjust: none; -webkit-font-smoothing: antialiased;
+}
+
 body {
   font-family: var(--font-body);
-  background: var(--color-bg);
+  background:
+    radial-gradient(circle at top, rgba(79,152,163,0.10), transparent 38%),
+    radial-gradient(circle at bottom right, rgba(232,175,52,0.08), transparent 30%),
+    var(--color-bg);
   color: var(--color-text);
   display: flex; flex-direction: column;
 }
+
+button, input, select { font: inherit; }
+
 .screen { display: none; width: 100%; height: 100%; }
 .screen.active { display: flex; }
+
 #lobby {
   flex-direction: column; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 70%),
-              radial-gradient(ellipse at 80% 80%, rgba(245,158,11,0.08) 0%, transparent 60%),
+  background: radial-gradient(ellipse at 50% 0%, rgba(79,152,163,0.15) 0%, transparent 70%),
+              radial-gradient(ellipse at 80% 80%, rgba(232,175,52,0.08) 0%, transparent 60%),
               var(--color-bg);
   gap: 0;
 }
+
 .lobby-title {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 6vw, 5rem);
-  background: linear-gradient(135deg, #f59e0b, #ec4899, #7c3aed);
+  background: linear-gradient(135deg, #e8af34, #c36be0, #4f98a3);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   text-align: center; line-height: 1; margin-bottom: 8px;
-  filter: drop-shadow(0 0 30px rgba(124,58,237,0.4));
+  filter: drop-shadow(0 0 30px rgba(79,152,163,0.4));
 }
+
 .lobby-subtitle {
   color: var(--color-text-muted); font-size: 1rem;
   text-align: center; margin-bottom: 40px;
 }
+
 .lobby-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -69,12 +90,13 @@ body {
   width: min(460px, 92vw);
   box-shadow: var(--shadow-lg);
 }
+
 .lobby-card h2 {
-  font-family: var(--font-display);
-  font-size: 1.2rem; color: var(--color-text);
-  margin-bottom: 24px; text-align: center;
-  letter-spacing: 0.05em;
+  font-family: var(--font-display); font-size: 1.2rem;
+  color: var(--color-text); margin-bottom: 24px;
+  text-align: center; letter-spacing: 0.05em;
 }
+
 .form-group { margin-bottom: 16px; }
 .form-group label {
   display: block; font-size: 0.8rem; font-weight: 700;
@@ -86,795 +108,213 @@ body {
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  color: var(--color-text); font-family: var(--font-body);
-  font-size: 0.95rem; outline: none;
+  color: var(--color-text); font-size: 0.95rem; outline: none;
   transition: border-color var(--transition);
 }
-.form-group input:focus, .form-group select:focus {
-  border-color: var(--color-primary);
-}
-.form-group select option { background: #1a1d27; }
+.form-group input:focus, .form-group select:focus { border-color: var(--color-primary); }
+.form-group select option { background: #181d24; }
+
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
-  gap: 8px; padding: 12px 24px;
+  gap: 8px; min-height: 42px; padding: 10px 18px;
   border: none; border-radius: var(--radius-md);
-  font-family: var(--font-body); font-size: 0.95rem;
-  font-weight: 800; cursor: pointer;
-  transition: all var(--transition);
-  text-transform: uppercase; letter-spacing: 0.05em;
+  font-size: 0.92rem; font-weight: 800; cursor: pointer;
+  transition: transform var(--transition), filter var(--transition), background var(--transition), border-color var(--transition);
+  text-transform: uppercase; letter-spacing: 0.04em;
 }
-.btn-primary {
-  background: var(--color-primary); color: #fff;
-  box-shadow: 0 4px 20px rgba(124,58,237,0.4);
-}
-.btn-primary:hover { background: var(--color-primary-hover); transform: translateY(-1px); }
-.btn-accent {
-  background: var(--color-accent); color: #1a1200;
-  box-shadow: 0 4px 20px rgba(245,158,11,0.4);
-}
-.btn-accent:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.btn-ghost {
-  background: transparent; color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
-}
-.btn-ghost:hover { background: var(--color-surface-2); color: var(--color-text); }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 10px 22px rgba(79,152,163,0.26); }
+.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-accent { background: var(--color-accent); color: #271b00; box-shadow: 0 10px 22px rgba(232,175,52,0.24); }
+.btn-ghost { background: var(--color-surface-2); color: var(--color-text); border: 1px solid var(--color-border); }
 .btn-danger { background: var(--color-red); color: #fff; }
-.btn-danger:hover { filter: brightness(1.15); }
-.btn-sm { padding: 8px 14px; font-size: 0.82rem; }
+.btn-sm { min-height: 36px; padding: 8px 12px; font-size: 0.8rem; }
 .btn-full { width: 100%; }
+
 .divider {
   display: flex; align-items: center; gap: 12px;
-  color: var(--color-text-muted); font-size: 0.8rem;
-  margin: 20px 0;
+  color: var(--color-text-muted); font-size: 0.8rem; margin: 20px 0;
 }
-.divider::before, .divider::after {
-  content: ''; flex: 1;
-  height: 1px; background: var(--color-border);
-}
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--color-border); }
+
 #game { flex-direction: row; overflow: hidden; }
+
+.game-sidebar-left, .game-sidebar-right {
+  background: rgba(24,29,36,0.95);
+  backdrop-filter: blur(10px);
+}
+
 .game-sidebar-left {
-  width: 240px; flex-shrink: 0;
-  background: var(--color-surface);
+  width: 260px; flex-shrink: 0;
   border-right: 1px solid var(--color-border);
   display: flex; flex-direction: column;
-  overflow-y: auto; padding: 16px;
+  overflow-y: auto; padding: 16px; gap: 10px;
 }
+
 .game-main {
-  flex: 1; display: flex; align-items: center;
-  justify-content: center; overflow: hidden;
-  position: relative; padding: 12px;
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  overflow: auto; position: relative; padding: 12px;
 }
+
 .game-sidebar-right {
-  width: 260px; flex-shrink: 0;
-  background: var(--color-surface);
+  width: 300px; flex-shrink: 0;
   border-left: 1px solid var(--color-border);
-  display: flex; flex-direction: column;
-  overflow: hidden;
+  display: flex; flex-direction: column; overflow: hidden;
 }
+
 .sidebar-section-title {
   font-size: 0.72rem; font-weight: 800;
   text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--color-text-muted); margin-bottom: 10px;
 }
-.player-card {
-  background: var(--color-surface-2);
-  border: 2px solid transparent;
-  border-radius: var(--radius-md);
-  padding: 12px 14px; margin-bottom: 8px;
-  transition: border-color var(--transition);
+
+#board-shell {
+  display: flex; flex-direction: column;
+  gap: 12px; align-items: center; width: 100%;
 }
-.player-card.active-turn { border-color: var(--color-accent); }
-.player-card.bankrupt { opacity: 0.4; }
-.player-card .pc-top {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 8px;
+
+.board-toolbar {
+  width: min(100%, 980px);
+  display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: space-between; gap: 10px;
+  background: rgba(24,29,36,0.82);
+  border: 1px solid var(--color-border);
+  border-radius: 999px; padding: 10px 14px;
+  box-shadow: var(--shadow-md); backdrop-filter: blur(12px);
 }
-.player-card .p-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
+
+.toolbar-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.toolbar-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--color-surface-2);
+  border: 1px solid var(--color-border); border-radius: 999px;
+  font-size: 0.85rem; color: var(--color-text-muted);
 }
-.player-card .p-name { font-weight: 800; font-size: 0.9rem; line-height: 1.2; }
-.player-card .p-tag { font-size: 0.72rem; color: var(--color-text-muted); font-weight: 600; }
-.player-card .p-money {
-  font-family: var(--font-display);
-  font-size: 1.15rem; color: var(--color-green);
+
+.zoom-wrap {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: var(--color-surface-2);
+  border: 1px solid var(--color-border); border-radius: 999px;
 }
-.player-card .p-pos { font-size: 0.78rem; color: var(--color-text-muted); }
-.player-card .p-props { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
-.prop-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.zoom-wrap input[type="range"] { width: 140px; accent-color: var(--color-accent); }
+
 #board-wrap {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  width: min(calc(100vh - 24px), calc(100vw - 516px));
-  max-width: 700px;
+  position: relative; aspect-ratio: 1 / 1;
+  width: min(calc(100vh - 120px), calc(100vw - 620px), calc(var(--board-max-size) * 1px));
+  min-width: 320px; min-height: 320px;
+  transform: scale(var(--board-scale));
+  transform-origin: center center;
+  transition: transform var(--transition), width var(--transition);
 }
+
 #board-canvas {
-  position: absolute; top: 0; left: 0;
-  width: 100%; height: 100%;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
 }
-#board-overlay {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-}
+
+#board-overlay { position: absolute; inset: 0; pointer-events: none; }
+
 .board-center {
-  position: absolute;
-  top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 46%; height: 46%;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 47%; height: 47%;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  text-align: center; pointer-events: auto;
+  text-align: center; gap: 10px;
+  pointer-events: auto; padding: 12px;
 }
+
 .board-logo {
   font-family: var(--font-display);
-  font-size: clamp(1.2rem, 3vw, 2.2rem);
-  background: linear-gradient(135deg, #f59e0b, #ec4899, #7c3aed);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  line-height: 1; margin-bottom: 4px;
+  font-size: clamp(1.2rem, 2.8vw, 2.1rem);
+  color: var(--color-text); line-height: 1;
+  text-shadow: 0 4px 22px rgba(0,0,0,0.35);
 }
+
 .board-logo span {
-  display: block; font-size: 0.4em; color: var(--color-text-muted);
-  -webkit-text-fill-color: var(--color-text-muted);
-  font-family: var(--font-body); font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase;
+  display: block; font-size: 0.42em; color: var(--color-text-muted);
+  font-family: var(--font-body); font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px;
 }
-.dice-area { display: flex; gap: 10px; margin: 12px 0; }
+
+.dice-area { display: flex; gap: 12px; margin: 4px 0; }
+
 .die {
-  width: clamp(36px, 5vw, 48px); height: clamp(36px, 5vw, 48px);
-  background: #fff; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
-  transition: transform var(--transition); color: #1a1a2e; font-weight: 900;
+  width: clamp(42px, 5.4vw, 56px); height: clamp(42px, 5.4vw, 56px);
+  background: linear-gradient(180deg, #ffffff, #eef0f6);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.35rem, 2.7vw, 1.95rem);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.9);
+  color: #1a1d27; font-weight: 900;
+  will-change: transform; backface-visibility: hidden;
 }
-.die.rolling { animation: dieRoll 0.5s ease-out; }
+
+.die.rolling { animation: dieRoll 650ms cubic-bezier(.2,.8,.2,1); }
+
 @keyframes dieRoll {
-  0% { transform: rotate(0deg) scale(0.8); }
-  30% { transform: rotate(180deg) scale(1.2); }
-  70% { transform: rotate(330deg) scale(1.05); }
+  0%   { transform: rotate(0deg) scale(0.92); }
+  20%  { transform: rotate(140deg) scale(1.08) translateY(-3px); }
+  45%  { transform: rotate(260deg) scale(1.18); }
+  70%  { transform: rotate(330deg) scale(0.98) translateY(2px); }
   100% { transform: rotate(360deg) scale(1); }
 }
-#btn-roll {
-  padding: 10px 22px; font-size: 0.88rem;
-  background: var(--color-accent); color: #1a1200;
-  border: none; border-radius: var(--radius-md);
-  font-family: var(--font-body); font-weight: 900;
-  cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
-  box-shadow: 0 4px 16px rgba(245,158,11,0.4);
-  transition: all var(--transition);
-}
-#btn-roll:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
-#btn-roll:disabled { opacity: 0.4; cursor: not-allowed; }
-.action-panel {
-  padding: 16px; border-bottom: 1px solid var(--color-border); flex-shrink: 0;
-}
-.action-panel h3 {
-  font-family: var(--font-display); font-size: 0.85rem;
-  letter-spacing: 0.05em; margin-bottom: 12px; color: var(--color-text-muted);
-}
-.action-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-.game-log { flex: 1; overflow-y: auto; padding: 16px; }
-.log-entry {
-  font-size: 0.82rem; line-height: 1.5;
-  padding: 6px 10px; margin-bottom: 4px;
-  border-radius: var(--radius-sm);
-  border-left: 3px solid var(--color-border);
-  color: var(--color-text-muted);
-}
-.log-entry.highlight { background: rgba(124,58,237,0.08); border-left-color: var(--color-primary); color: var(--color-text); }
-.log-entry.money { background: rgba(16,185,129,0.08); border-left-color: var(--color-green); }
-.log-entry.danger { background: rgba(239,68,68,0.08); border-left-color: var(--color-red); }
-.log-entry.info { background: rgba(59,130,246,0.08); border-left-color: var(--color-blue); }
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-  z-index: 1000; display: flex; align-items: center; justify-content: center;
-  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
-}
-.modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal-box {
-  background: var(--color-surface); border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl); padding: 28px 32px;
-  width: min(440px, 96vw); box-shadow: var(--shadow-lg);
-  transform: scale(0.92); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
-}
-.modal-overlay.open .modal-box { transform: scale(1); }
-.modal-box h2 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 6px; }
-.modal-box .modal-subtitle { color: var(--color-text-muted); font-size: 0.88rem; margin-bottom: 20px; }
-.modal-box .modal-footer { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-.prop-card { border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--color-border); margin-bottom: 16px; }
-.prop-card-header { padding: 14px 18px; color: #fff; font-family: var(--font-display); font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-.prop-card-body { padding: 14px 18px; }
-.prop-stat { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--color-border); font-size: 0.88rem; }
-.prop-stat:last-child { border-bottom: none; }
-.prop-stat .stat-val { font-weight: 800; }
+
 .turn-banner {
   position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-  background: var(--color-surface); border: 1px solid var(--color-border);
-  border-radius: 9999px; padding: 6px 20px; font-size: 0.82rem; font-weight: 700;
-  white-space: nowrap; box-shadow: var(--shadow-lg); pointer-events: none; z-index: 10;
+  background: rgba(24,29,36,0.95); border: 1px solid var(--color-border);
+  border-radius: 999px; padding: 8px 18px; font-size: 0.84rem; font-weight: 800;
+  white-space: nowrap; box-shadow: var(--shadow-md); pointer-events: none; z-index: 10;
 }
-#toast {
-  position: fixed; bottom: 30px; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--color-surface); border: 1px solid var(--color-border);
-  border-radius: 9999px; padding: 12px 24px; font-size: 0.9rem; font-weight: 700;
-  box-shadow: var(--shadow-lg); z-index: 2000;
-  opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 90vw; text-align: center;
+
+.compact-stack { display: flex; flex-direction: column; gap: 8px; }
+
+.settings-grid { display: grid; gap: 12px; }
+
+.settings-item {
+  background: var(--color-surface-2); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 12px 14px;
 }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-#win {
-  flex-direction: column; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at 50% 30%, rgba(245,158,11,0.2) 0%, transparent 70%), var(--color-bg);
-  gap: 20px;
+
+.settings-item label {
+  display: block; font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: 8px; font-weight: 800;
 }
-.win-trophy { font-size: 5rem; animation: bounce 1s ease infinite; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-.win-title {
-  font-family: var(--font-display); font-size: clamp(2rem,5vw,3.5rem);
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+
+.settings-value { margin-top: 8px; font-size: 0.82rem; color: var(--color-text-muted); }
+
+.log-entry {
+  font-size: 0.82rem; line-height: 1.5;
+  padding: 8px 10px; margin-bottom: 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid transparent; color: var(--color-text-muted);
 }
-.win-subtitle { color: var(--color-text-muted); font-size: 1rem; }
-.mortgage-badge { display: inline-block; background: var(--color-red); color: #fff; font-size: 0.65rem; padding: 1px 5px; border-radius: 3px; font-weight: 800; vertical-align: middle; margin-left: 4px; }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-@media (max-width: 900px) { .game-sidebar-left { width: 180px; } .game-sidebar-right { width: 200px; } }
-@media (max-width: 680px) {
-  #game { flex-direction: column; }
-  .game-sidebar-left, .game-sidebar-right { width: 100%; height: auto; border: none; border-bottom: 1px solid var(--color-border); flex-direction: row; overflow-x: auto; }
-  .game-main { padding: 8px; }
-  #board-wrap { width: min(96vw, 96vh); }
+.log-entry.highlight { background: rgba(79,152,163,0.10); border-color: rgba(79,152,163,0.18); color: var(--color-text); }
+.log-entry.money    { background: rgba(109,170,69,0.10); border-color: rgba(109,170,69,0.18); }
+.log-entry.danger   { background: rgba(209,99,99,0.12); border-color: rgba(209,99,99,0.18); }
+.log-entry.info     { background: rgba(85,145,199,0.10); border-color: rgba(85,145,199,0.18); }
+
+.player-card {
+  background: var(--color-surface-2); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 12px 14px;
+  transition: border-color var(--transition), transform var(--transition);
 }
-</style>
-</head>
-<body>
-<div id="lobby" class="screen active">
-  <div class="lobby-title">МОНОПОЛИЯ</div>
-  <div class="lobby-subtitle">Классическая настольная игра в браузере</div>
-  <div class="lobby-card" id="lobby-main-card">
-    <h2>🎲 НОВАЯ ИГРА</h2>
-    <div class="form-group"><label>Ваше имя</label><input type="text" id="player-name" placeholder="Введите имя..." maxlength="16" value="Игрок 1"></div>
-    <div class="form-group"><label>Выберите фишку</label><select id="player-token"><option value="🎩">🎩 Цилиндр</option><option value="🚂">🚂 Поезд</option><option value="🚗">🚗 Машина</option><option value="🐶">🐶 Собачка</option><option value="⚓">⚓ Якорь</option><option value="🏠">🏠 Домик</option><option value="🎸">🎸 Гитара</option><option value="🦁">🦁 Лев</option></select></div>
-    <div class="form-group"><label>Количество игроков</label><select id="player-count"><option value="2">2 игрока</option><option value="3">3 игрока</option><option value="4" selected>4 игрока</option></select></div>
-    <div class="form-group"><label>Стартовый капитал</label><select id="start-money"><option value="1500" selected>₽ 1500 (классика)</option><option value="2000">₽ 2000 (расширенная)</option><option value="3000">₽ 3000 (лёгкая)</option></select></div>
-    <button class="btn btn-primary btn-full" onclick="startGame()">🎲 НАЧАТЬ ИГРУ</button>
-    <div class="divider">ИЛИ</div>
-    <button class="btn btn-ghost btn-full" onclick="showJoinScreen()">🔗 Присоединиться по коду</button>
-  </div>
-  <div class="lobby-card" id="lobby-join-card" style="display:none">
-    <h2>🔗 ПРИСОЕДИНИТЬСЯ</h2>
-    <div class="form-group"><label>Ваше имя</label><input type="text" id="join-name" placeholder="Введите имя..." maxlength="16"></div>
-    <div class="form-group"><label>Код комнаты</label><div style="display:flex;gap:10px"><input type="text" id="join-code" placeholder="XXXX" maxlength="6" style="flex:1;text-transform:uppercase"><button class="btn btn-primary" onclick="joinRoom()">Войти</button></div></div>
-    <div class="divider"></div>
-    <button class="btn btn-ghost btn-full" onclick="showMainLobby()">← Назад</button>
-  </div>
-</div>
-<div id="game" class="screen">
-  <div class="game-sidebar-left">
-    <div class="sidebar-section-title">👥 Игроки</div>
-    <div id="players-list"></div>
-    <div style="flex:1"></div>
-    <button class="btn btn-ghost btn-sm btn-full" onclick="confirmEndGame()" style="margin-top:10px">🚪 Выйти</button>
-  </div>
-  <div class="game-main">
-    <div id="turn-banner" class="turn-banner">Ход: —</div>
-    <div id="board-wrap">
-      <canvas id="board-canvas"></canvas>
-      <div id="board-overlay">
-        <div class="board-center" id="board-center">
-          <div class="board-logo">МОНО<span>ПОЛИЯ</span></div>
-          <div class="dice-area"><div class="die" id="die1">⚀</div><div class="die" id="die2">⚀</div></div>
-          <button id="btn-roll" onclick="rollDice()">🎲 БРОСИТЬ</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="game-sidebar-right">
-    <div class="action-panel">
-      <h3>⚡ ДЕЙСТВИЯ</h3>
-      <div class="action-btns" id="action-btns">
-        <button class="btn btn-ghost btn-sm" onclick="showOwnedProperties()">🏘️ Мои</button>
-        <button class="btn btn-ghost btn-sm" onclick="showMortgage()">🏦 Залог</button>
-        <button class="btn btn-ghost btn-sm" onclick="showTrade()">🤝 Обмен</button>
-        <button class="btn btn-ghost btn-sm" onclick="showAllProps()">📋 Все</button>
-      </div>
-    </div>
-    <div style="padding:8px 16px; border-bottom:1px solid var(--color-border); flex-shrink:0"><div class="sidebar-section-title">📜 Журнал игры</div></div>
-    <div class="game-log" id="game-log"></div>
-  </div>
-</div>
-<div id="win" class="screen">
-  <div class="win-trophy">🏆</div>
-  <div class="win-title" id="win-title">ПОБЕДИТЕЛЬ!</div>
-  <div class="win-subtitle" id="win-subtitle">Поздравляем!</div>
-  <button class="btn btn-accent" onclick="backToLobby()">🎲 Играть снова</button>
-</div>
-<div class="modal-overlay" id="modal">
-  <div class="modal-box" id="modal-box">
-    <h2 id="modal-title">Заголовок</h2>
-    <p class="modal-subtitle" id="modal-subtitle"></p>
-    <div id="modal-content"></div>
-    <div class="modal-footer" id="modal-footer"></div>
-  </div>
-</div>
-<div id="toast"></div>
-<script>
-const BOARD = [
-  {id:0,name:'СТАРТ',type:'go',color:null},
-  {id:1,name:'Садовая ул.',type:'prop',color:'#8B4513',price:60,rent:[2,10,30,90,160,250],houseCost:50,monopoly:0},
-  {id:2,name:'Касса',type:'chest',color:null},
-  {id:3,name:'Лесная ул.',type:'prop',color:'#8B4513',price:60,rent:[4,20,60,180,320,450],houseCost:50,monopoly:0},
-  {id:4,name:'Налог на доход',type:'tax',amount:200},
-  {id:5,name:'Ж/Д Север',type:'railroad',price:200},
-  {id:6,name:'Проспект',type:'prop',color:'#87CEEB',price:100,rent:[6,30,90,270,400,550],houseCost:50,monopoly:1},
-  {id:7,name:'Шанс',type:'chance',color:null},
-  {id:8,name:'Московская ул.',type:'prop',color:'#87CEEB',price:100,rent:[6,30,90,270,400,550],houseCost:50,monopoly:1},
-  {id:9,name:'Набережная',type:'prop',color:'#87CEEB',price:120,rent:[8,40,100,300,450,600],houseCost:50,monopoly:1},
-  {id:10,name:'ТЮРЬМА',type:'jail',color:null},
-  {id:11,name:'Пушкинская',type:'prop',color:'#FF69B4',price:140,rent:[10,50,150,450,625,750],houseCost:100,monopoly:2},
-  {id:12,name:'Электро',type:'utility',price:150},
-  {id:13,name:'Невский пр.',type:'prop',color:'#FF69B4',price:140,rent:[10,50,150,450,625,750],houseCost:100,monopoly:2},
-  {id:14,name:'Лиговский пр.',type:'prop',color:'#FF69B4',price:160,rent:[12,60,180,500,700,900],houseCost:100,monopoly:2},
-  {id:15,name:'Ж/Д Восток',type:'railroad',price:200},
-  {id:16,name:'Кронверкский',type:'prop',color:'#FFA500',price:180,rent:[14,70,200,550,750,950],houseCost:100,monopoly:3},
-  {id:17,name:'Касса',type:'chest',color:null},
-  {id:18,name:'Литейный пр.',type:'prop',color:'#FFA500',price:180,rent:[14,70,200,550,750,950],houseCost:100,monopoly:3},
-  {id:19,name:'Загородный пр.',type:'prop',color:'#FFA500',price:200,rent:[16,80,220,600,800,1000],houseCost:100,monopoly:3},
-  {id:20,name:'ПАРКОВКА',type:'free_parking',color:null},
-  {id:21,name:'Садовая ул.2',type:'prop',color:'#FF0000',price:220,rent:[18,90,250,700,875,1050],houseCost:150,monopoly:4},
-  {id:22,name:'Шанс',type:'chance',color:null},
-  {id:23,name:'Гороховая ул.',type:'prop',color:'#FF0000',price:220,rent:[18,90,250,700,875,1050],houseCost:150,monopoly:4},
-  {id:24,name:'Апраксин пер.',type:'prop',color:'#FF0000',price:240,rent:[20,100,300,750,925,1100],houseCost:150,monopoly:4},
-  {id:25,name:'Ж/Д Юг',type:'railroad',price:200},
-  {id:26,name:'Средний пр.',type:'prop',color:'#FFFF00',price:260,rent:[22,110,330,800,975,1150],houseCost:150,monopoly:5},
-  {id:27,name:'Большой пр.',type:'prop',color:'#FFFF00',price:260,rent:[22,110,330,800,975,1150],houseCost:150,monopoly:5},
-  {id:28,name:'Водоканал',type:'utility',price:150},
-  {id:29,name:'Каменноостровский',type:'prop',color:'#FFFF00',price:280,rent:[24,120,360,850,1025,1200],houseCost:150,monopoly:5},
-  {id:30,name:'В ТЮРЬМУ',type:'go_to_jail',color:null},
-  {id:31,name:'Каменный остров',type:'prop',color:'#008000',price:300,rent:[26,130,390,900,1100,1275],houseCost:200,monopoly:6},
-  {id:32,name:'Ул. Рубинштейна',type:'prop',color:'#008000',price:300,rent:[26,130,390,900,1100,1275],houseCost:200,monopoly:6},
-  {id:33,name:'Касса',type:'chest',color:null},
-  {id:34,name:'Ул. Правды',type:'prop',color:'#008000',price:320,rent:[28,150,450,1000,1200,1400],houseCost:200,monopoly:6},
-  {id:35,name:'Ж/Д Запад',type:'railroad',price:200},
-  {id:36,name:'Шанс',type:'chance',color:null},
-  {id:37,name:'Дворцовая пл.',type:'prop',color:'#00008B',price:350,rent:[35,175,500,1100,1300,1500],houseCost:200,monopoly:7},
-  {id:38,name:'Налог на роскошь',type:'tax',amount:100},
-  {id:39,name:'Невская пл.',type:'prop',color:'#00008B',price:400,rent:[50,200,600,1400,1700,2000],houseCost:200,monopoly:7}
-];
-const CHANCE_CARDS=[
-  {text:'Вы выиграли красивый конкурс. Получите ₽150',action:(p)=>{addMoney(p,150);}},
-  {text:'Банк ошибся в вашу пользу. Получите ₽200',action:(p)=>{addMoney(p,200);}},
-  {text:'Штраф за нарушение ПДД. Заплатите ₽100',action:(p)=>{payMoney(p,100);}},
-  {text:'Отправляйтесь в тюрьму! Прямо туда!',action:(p)=>{goToJail(p);}},
-  {text:'Идите на Старт! Получите ₽200',action:(p)=>{G.players[p].position=0;addMoney(p,200);}},
-  {text:'Получите дивиденды ₽50 от каждого игрока',action:(p)=>{collectFromAll(p,50);}},
-  {text:'Ремонт домов: ₽25 за дом, ₽100 за отель',action:(p)=>{payRepairs(p,25,100);}},
-  {text:'Выход из тюрьмы бесплатно',action:(p)=>{G.players[p].jailFreeCard=true;}},
-  {text:'Вы выиграли конкурс. Получите ₽100',action:(p)=>{addMoney(p,100);}},
-  {text:'Выплата за консультации ₽25 от каждого',action:(p)=>{collectFromAll(p,25);}}
-];
-const CHEST_CARDS=[
-  {text:'Выигрыш в лотерею! Получите ₽100',action:(p)=>{addMoney(p,100);}},
-  {text:'Возврат налогов. Получите ₽20',action:(p)=>{addMoney(p,20);}},
-  {text:'День рождения! Получите ₽10 от каждого',action:(p)=>{collectFromAll(p,10);}},
-  {text:'Коммунальные платежи ₽150',action:(p)=>{payMoney(p,150);}},
-  {text:'Получите наследство ₽100',action:(p)=>{addMoney(p,100);}},
-  {text:'Штраф за некорректное поведение ₽50',action:(p)=>{payMoney(p,50);}},
-  {text:'Выход из тюрьмы бесплатно',action:(p)=>{G.players[p].jailFreeCard=true;}},
-  {text:'Доходы от аренды ₽200',action:(p)=>{addMoney(p,200);}},
-  {text:'Ошибка банка: верните ₽200',action:(p)=>{payMoney(p,200);}},
-  {text:'Продали акции. Получите ₽50',action:(p)=>{addMoney(p,50);}}
-];
-let G={players:[],currentPlayer:0,phase:'roll',turnCount:0,properties:{},parkingPot:0,chanceIdx:0,chestIdx:0,gameOver:false,myIndex:0};
-const COLORS=['#7c3aed','#ef4444','#10b981','#f59e0b','#3b82f6','#ec4899'];
-const TOKENS=['🎩','🚂','🚗','🐶','⚓','🏠','🎸','🦁'];
-const CPU_NAMES=['Алиса','Борис','Вера','Глеб','Дарья','Егор'];
-function showJoinScreen(){document.getElementById('lobby-main-card').style.display='none';document.getElementById('lobby-join-card').style.display='';}
-function showMainLobby(){document.getElementById('lobby-main-card').style.display='';document.getElementById('lobby-join-card').style.display='none';}
-function joinRoom(){toast('⚠️ Мультиплеер в разработке. Попробуйте одиночную игру!');}
-function startGame(){
-  const name=document.getElementById('player-name').value.trim()||'Игрок';
-  const token=document.getElementById('player-token').value;
-  const count=parseInt(document.getElementById('player-count').value);
-  const money=parseInt(document.getElementById('start-money').value);
-  G={players:[],currentPlayer:0,phase:'roll',turnCount:0,properties:{},parkingPot:0,chanceIdx:0,chestIdx:0,gameOver:false,myIndex:0};
-  G.players.push({name,token,color:COLORS[0],money,position:0,inJail:false,jailTurns:0,jailFreeCard:false,bankrupt:false,isHuman:true});
-  const usedNames=new Set([name]);
-  for(let i=1;i<count;i++){
-    let cpuName=CPU_NAMES[i-1];
-    while(usedNames.has(cpuName))cpuName+='★';
-    usedNames.add(cpuName);
-    G.players.push({name:cpuName,token:TOKENS[i],color:COLORS[i],money,position:0,inJail:false,jailTurns:0,jailFreeCard:false,bankrupt:false,isHuman:false});
-  }
-  BOARD.forEach(sq=>{if(sq.type==='prop'||sq.type==='railroad'||sq.type==='utility')G.properties[sq.id]={owner:null,houses:0,mortgaged:false};});
-  showScreen('game');
-  drawBoard();
-  updatePlayersList();
-  updateTurnBanner();
-  addLog('🎲 Игра началась! Первый ход: '+G.players[0].name,'highlight');
-  G.phase='roll';
-}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-let canvas,ctx,boardSize;
-function drawBoard(){
-  canvas=document.getElementById('board-canvas');
-  const wrap=document.getElementById('board-wrap');
-  boardSize=wrap.clientWidth;
-  canvas.width=boardSize; canvas.height=boardSize;
-  ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,boardSize,boardSize);
-  const C=boardSize*0.145;
-  const S=(boardSize-C*2)/9;
-  ctx.fillStyle='#0a2416';
-  roundRectFill(ctx,0,0,boardSize,boardSize,16);
-  ctx.fillStyle='#e8f5e9';
-  ctx.fillRect(C,C,boardSize-C*2,boardSize-C*2);
-  for(let i=0;i<40;i++)drawCellAt(i,C,S);
-  drawPlayers(C,S);
-}
-function getCellRect(idx,C,S){
-  const BS=boardSize;
-  if(idx===0)return{x:BS-C,y:BS-C,w:C,h:C,side:'corner'};
-  if(idx===10)return{x:0,y:BS-C,w:C,h:C,side:'corner'};
-  if(idx===20)return{x:0,y:0,w:C,h:C,side:'corner'};
-  if(idx===30)return{x:BS-C,y:0,w:C,h:C,side:'corner'};
-  if(idx>=1&&idx<=9)return{x:BS-C-idx*S,y:BS-C,w:S,h:C,side:'bottom'};
-  if(idx>=11&&idx<=19)return{x:0,y:BS-C-(idx-10)*S,w:C,h:S,side:'left'};
-  if(idx>=21&&idx<=29)return{x:C+(idx-20)*S,y:0,w:S,h:C,side:'top'};
-  if(idx>=31&&idx<=39)return{x:BS-C,y:C+(idx-30)*S,w:C,h:S,side:'right'};
-  return null;
-}
-function drawCellAt(idx,C,S){
-  const sq=BOARD[idx];
-  const r=getCellRect(idx,C,S);
-  if(!r)return;
-  ctx.fillStyle='#f0ece0';
-  ctx.fillRect(r.x,r.y,r.w,r.h);
-  ctx.strokeStyle='#2a5a3a'; ctx.lineWidth=1.5;
-  ctx.strokeRect(r.x,r.y,r.w,r.h);
-  if(sq.type==='prop'&&sq.color){
-    const stripH=Math.min(r.h,r.w)*0.28;
-    ctx.fillStyle=sq.color;
-    if(r.side==='bottom')ctx.fillRect(r.x,r.y,r.w,stripH);
-    else if(r.side==='top')ctx.fillRect(r.x,r.y+r.h-stripH,r.w,stripH);
-    else if(r.side==='left')ctx.fillRect(r.x+r.w-stripH,r.y,stripH,r.h);
-    else if(r.side==='right')ctx.fillRect(r.x,r.y,stripH,r.h);
-  }
-  const prop=G.properties[idx];
-  if(prop&&prop.owner!==null){
-    const owner=G.players[prop.owner];
-    ctx.fillStyle=owner.color+'40';
-    ctx.fillRect(r.x+1.5,r.y+1.5,r.w-3,r.h-3);
-    if(prop.houses>0&&prop.houses<=4){
-      const hSize=Math.min(r.w,r.h)*0.18;
-      for(let h=0;h<prop.houses;h++){
-        ctx.fillStyle='#22c55e';
-        if(r.side==='bottom'||r.side==='top')ctx.fillRect(r.x+2+h*(hSize+2),r.y+r.h/2-hSize/2,hSize,hSize);
-        else ctx.fillRect(r.x+r.w/2-hSize/2,r.y+2+h*(hSize+2),hSize,hSize);
-      }
-    }else if(prop.houses===5){
-      const hSize=Math.min(r.w,r.h)*0.25;
-      ctx.fillStyle='#ef4444';
-      ctx.fillRect(r.x+r.w/2-hSize/2,r.y+r.h/2-hSize/2,hSize,hSize);
-    }
-    if(prop.mortgaged){ctx.fillStyle='rgba(0,0,0,0.45)';ctx.fillRect(r.x+1.5,r.y+1.5,r.w-3,r.h-3);}
-  }
-  ctx.save();
-  const cx=r.x+r.w/2,cy=r.y+r.h/2;
-  const isCorner=r.side==='corner';
-  const fSize=isCorner?Math.min(r.w,r.h)*0.1:Math.min(r.w,r.h)*0.13;
-  if(r.side==='right'){ctx.translate(cx,cy);ctx.rotate(-Math.PI/2);}
-  else if(r.side==='left'){ctx.translate(cx,cy);ctx.rotate(Math.PI/2);}
-  else if(r.side==='top'){ctx.translate(cx,cy);ctx.rotate(Math.PI);}
-  else ctx.translate(cx,cy);
-  ctx.fillStyle='#1a2e1a';
-  ctx.font='bold '+fSize+'px Nunito,sans-serif';
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  if(isCorner){
-    ctx.font=Math.min(r.w,r.h)*0.28+'px serif';
-    const emoji=idx===0?'🚦':idx===10?'🔒':idx===20?'🅿️':'👮';
-    ctx.fillText(emoji,0,-fSize*0.8);
-    ctx.font='bold '+fSize+'px Nunito';
-    ctx.fillStyle='#1a2e1a';
-    const label=idx===0?'СТАРТ':idx===10?'ТЮРЬМА':idx===20?'ПАРК':'ТЮРЬМА';
-    ctx.fillText(label,0,fSize*1.4);
-  }else{
-    const words=sq.name.split(' ');
-    if(words.length===1)ctx.fillText(words[0],0,0);
-    else{ctx.fillText(words[0],0,-fSize*0.65);ctx.fillText(words.slice(1).join(' '),0,fSize*0.65);}
-    if(sq.price){ctx.fillStyle='#2a5a3a';ctx.font=fSize*0.85+'px Nunito';ctx.fillText('₽'+sq.price,0,fSize*1.5);}
-    if(sq.type==='chance'||sq.type==='chest'||sq.type==='tax'){
-      ctx.font=Math.min(r.w,r.h)*0.32+'px serif';
-      const ico=sq.type==='chance'?'❓':sq.type==='chest'?'💰':'💸';
-      ctx.fillText(ico,0,-fSize*0.9);
-      ctx.font='bold '+fSize+'px Nunito'; ctx.fillStyle='#1a2e1a';
-      ctx.fillText(sq.type==='chance'?'ШАНС':sq.type==='chest'?'КАССА':sq.name,0,fSize*0.7);
-    }
-    if(sq.type==='railroad'){ctx.font=Math.min(r.w,r.h)*0.28+'px serif';ctx.fillText('🚂',0,-fSize*0.5);}
-    if(sq.type==='utility'){ctx.font=Math.min(r.w,r.h)*0.28+'px serif';ctx.fillText(idx===12?'⚡':'💧',0,-fSize*0.5);}
-  }
-  ctx.restore();
-}
-function drawPlayers(C,S){
-  G.players.forEach((p,pi)=>{
-    if(p.bankrupt)return;
-    const r=getCellRect(p.position,C,S);
-    if(!r)return;
-    const offsets=[[-8,-8],[8,-8],[-8,8],[8,8]];
-    const off=offsets[pi]||[0,0];
-    const cx=r.x+r.w/2+off[0], cy=r.y+r.h/2+off[1];
-    if(pi===G.currentPlayer){ctx.shadowColor=G.players[pi].color;ctx.shadowBlur=12;}
-    ctx.font=Math.min(r.w,r.h)*0.38+'px serif';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(p.token,cx,cy);
-    ctx.shadowBlur=0;
-  });
-}
-function roundRectFill(ctx,x,y,w,h,r){
-  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
-  ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
-  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
-  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
-  ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();ctx.fill();
-}
-let lastRoll=[1,1],doublesCount=0;
-async function rollDice(){
-  if(G.gameOver)return;
-  const p=G.players[G.currentPlayer];
-  if(!p.isHuman)return;
-  document.getElementById('btn-roll').disabled=true;
-  const d1=document.getElementById('die1'),d2=document.getElementById('die2');
-  d1.classList.add('rolling');d2.classList.add('rolling');
-  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
-  await new Promise(res=>{
-    let t=0;
-    const iv=setInterval(()=>{d1.textContent=faces[Math.floor(Math.random()*6)];d2.textContent=faces[Math.floor(Math.random()*6)];if(++t>8){clearInterval(iv);res();}},80);
-  });
-  const r1=Math.floor(Math.random()*6)+1,r2=Math.floor(Math.random()*6)+1;
-  d1.textContent=faces[r1-1];d2.textContent=faces[r2-1];
-  d1.classList.remove('rolling');d2.classList.remove('rolling');
-  lastRoll=[r1,r2];
-  processRoll(r1,r2,G.currentPlayer);
-}
-function processRoll(r1,r2,pi){
-  const p=G.players[pi];
-  const isDouble=r1===r2;
-  if(p.inJail){
-    if(isDouble||p.jailTurns>=2){p.inJail=false;p.jailTurns=0;addLog('🔓 '+p.name+' выходит из тюрьмы','highlight');if(!isDouble&&!p.jailFreeCard)payMoney(pi,50);}
-    else{p.jailTurns++;addLog('🔒 '+p.name+' в тюрьме (ход '+p.jailTurns+'/3)','info');endTurn();return;}
-  }
-  if(isDouble){doublesCount++;if(doublesCount===3){addLog('😱 '+p.name+' три дубля — В ТЮРЬМУ!','danger');goToJail(pi);endTurn();return;}}
-  else doublesCount=0;
-  const steps=r1+r2;
-  addLog('🎲 '+p.name+' бросает '+r1+'+'+r2+'='+steps,'');
-  movePlayer(pi,steps);
-}
-function movePlayer(pi,steps){
-  const p=G.players[pi];
-  const prev=p.position;
-  const next=(prev+steps)%40;
-  if(next<prev||(prev+steps)>=40){addMoney(pi,200);addLog('✅ '+p.name+' проходит Старт — получает ₽200','money');}
-  p.position=next;
-  drawBoard();
-  updatePlayersList();
-  setTimeout(()=>landOn(pi,next),400);
-}
-function landOn(pi,pos){
-  const p=G.players[pi];
-  const sq=BOARD[pos];
-  addLog('📍 '+p.name+' попадает на "'+sq.name+'"','');
-  if(sq.type==='go'){endTurn();}
-  else if(sq.type==='tax'){addLog('💸 Налог ₽'+sq.amount,'danger');payMoney(pi,sq.amount);endTurn();}
-  else if(sq.type==='go_to_jail'){goToJail(pi);endTurn();}
-  else if(sq.type==='jail'){addLog('👀 '+p.name+' посещает тюрьму','');endTurn();}
-  else if(sq.type==='free_parking'){
-    if(G.parkingPot>0){addLog('🅿️ '+p.name+' берёт джекпот ₽'+G.parkingPot,'money');addMoney(pi,G.parkingPot);G.parkingPot=0;}
-    else addLog('🅿️ Бесплатная парковка','');
-    endTurn();
-  }
-  else if(sq.type==='chance')drawCard('chance',pi);
-  else if(sq.type==='chest')drawCard('chest',pi);
-  else if(sq.type==='prop'||sq.type==='railroad'||sq.type==='utility'){
-    const prop=G.properties[pos];
-    if(prop.owner===null){
-      if(p.money>=sq.price){
-        if(p.isHuman)showBuyModal(pi,pos);
-        else{if(p.money>sq.price*1.5||Math.random()>0.3)buyProperty(pi,pos);else{addLog('🤖 '+p.name+' не покупает','');endTurn();}}
-      }else{addLog('💸 '+p.name+' не может купить ₽'+sq.price,'danger');endTurn();}
-    }else if(prop.owner===pi){
-      if(p.isHuman&&!prop.mortgaged&&canBuildHouse(pi,pos))showBuildModal(pi,pos);
-      else endTurn();
-    }else if(!prop.mortgaged){
-      const rent=calcRent(pos);
-      addLog('🏘️ '+p.name+' платит аренду ₽'+rent+' → '+G.players[prop.owner].name,'danger');
-      transferMoney(pi,prop.owner,rent);endTurn();
-    }else endTurn();
-  }
-}
-function calcRent(pos){
-  const sq=BOARD[pos],prop=G.properties[pos];
-  if(sq.type==='railroad'){const n=[5,15,25,35].filter(id=>G.properties[id]&&G.properties[id].owner===prop.owner).length;return[0,25,50,100,200][n];}
-  if(sq.type==='utility'){const n=[12,28].filter(id=>G.properties[id]&&G.properties[id].owner===prop.owner).length;const roll=lastRoll[0]+lastRoll[1];return n===2?roll*10:roll*4;}
-  if(sq.type==='prop'){
-    if(prop.houses===0){const mono=BOARD.filter(s=>s.monopoly===sq.monopoly&&s.type==='prop');const allOwned=mono.every(s=>G.properties[s.id]&&G.properties[s.id].owner===prop.owner);return allOwned?sq.rent[0]*2:sq.rent[0];}
-    return sq.rent[Math.min(prop.houses,5)];
-  }
-  return 0;
-}
-function canBuildHouse(pi,pos){const sq=BOARD[pos];if(sq.type!=='prop')return false;const mono=BOARD.filter(s=>s.monopoly===sq.monopoly&&s.type==='prop');return mono.every(s=>G.properties[s.id]&&G.properties[s.id].owner===pi);}
-function buyProperty(pi,pos){const sq=BOARD[pos];G.players[pi].money-=sq.price;G.properties[pos].owner=pi;addLog('🏠 '+G.players[pi].name+' покупает "'+sq.name+'" за ₽'+sq.price,'money');updatePlayersList();drawBoard();endTurn();}
-function goToJail(pi){const p=G.players[pi];p.position=10;p.inJail=true;p.jailTurns=0;addLog('🚔 '+p.name+' отправляется в ТЮРЬМУ','danger');drawBoard();}
-function drawCard(type,pi){
-  const deck=type==='chance'?CHANCE_CARDS:CHEST_CARDS;
-  const idxKey=type==='chance'?'chanceIdx':'chestIdx';
-  const card=deck[G[idxKey]%deck.length];
-  G[idxKey]++;
-  addLog((type==='chance'?'❓':'💰')+' '+G.players[pi].name+': "'+card.text+'"','highlight');
-  card.action(pi);
-  drawBoard();updatePlayersList();checkBankruptcy(pi);endTurn();
-}
-function addMoney(pi,amount){G.players[pi].money+=amount;updatePlayersList();}
-function payMoney(pi,amount){
-  const p=G.players[pi];
-  if(p.money>=amount){p.money-=amount;G.parkingPot+=amount;}
-  else{raiseFunds(pi,amount-p.money);p.money=Math.max(0,p.money-amount);G.parkingPot+=amount;checkBankruptcy(pi);}
-  updatePlayersList();
-}
-function transferMoney(fromPi,toPi,amount){
-  const from=G.players[fromPi],to=G.players[toPi];
-  if(from.money>=amount){from.money-=amount;to.money+=amount;}
-  else{raiseFunds(fromPi,amount-from.money);to.money+=from.money;from.money=0;checkBankruptcy(fromPi);}
-  updatePlayersList();
-}
-function collectFromAll(pi,amount){G.players.forEach((p,i)=>{if(i!==pi&&!p.bankrupt)transferMoney(i,pi,amount);});}
-function payRepairs(pi,perHouse,perHotel){
-  let total=0;
-  Object.keys(G.properties).forEach(pos=>{const prop=G.properties[pos];if(prop.owner===pi)total+=prop.houses===5?perHotel:prop.houses*perHouse;});
-  payMoney(pi,total);addLog('🔧 Ремонт: ₽'+total,'danger');
-}
-function raiseFunds(pi,needed){
-  Object.keys(G.properties).forEach(pos=>{
-    const prop=G.properties[pos];
-    if(prop.owner===pi&&!prop.mortgaged&&needed>0){
-      const sq=BOARD[parseInt(pos)],mv=Math.floor(sq.price/2);
-      prop.mortgaged=true;G.players[pi].money+=mv;needed-=mv;
-      addLog('🏦 '+G.players[pi].name+' закладывает "'+sq.name+'" за ₽'+mv,'info');
-    }
-  });
-}
-function checkBankruptcy(pi){
-  const p=G.players[pi];
-  if(p.money<=0){
-    const hasProps=Object.values(G.properties).some(pr=>pr.owner===pi);
-    if(!hasProps&&p.money<0){p.bankrupt=true;p.money=0;addLog('💀 '+p.name+' БАНКРОТ!','danger');toast('💀 '+p.name+' объявляет банкротство!');drawBoard();updatePlayersList();checkWin();}
-  }
-}
-function checkWin(){
-  const active=G.players.filter(p=>!p.bankrupt);
-  if(active.length===1){G.gameOver=true;const winner=active[0];const ownedCnt=Object.values(G.properties).filter(p=>p.owner===G.players.indexOf(winner)).length;setTimeout(()=>{document.getElementById('win-title').textContent='🏆 '+winner.name+' ПОБЕДИЛ!';document.getElementById('win-subtitle').textContent='Капитал: ₽'+winner.money+' | Владений: '+ownedCnt;showScreen('win');},1500);}
-}
-function endTurn(){
-  if(G.gameOver)return;
-  updatePlayersList();checkWin();
-  if(G.gameOver)return;
-  let next=G.currentPlayer,tries=0;
-  do{next=(next+1)%G.players.length;tries++;}while(G.players[next].bankrupt&&tries<G.players.length);
-  G.currentPlayer=next;G.turnCount++;
-  updateTurnBanner();
-  document.getElementById('btn-roll').disabled=false;
-  addLog('---','');
-  addLog('🔄 Ход: '+G.players[next].name,'highlight');
-  if(!G.players[next].isHuman)setTimeout(()=>cpuTurn(next),900);
-}
-function cpuTurn(pi){
-  if(G.gameOver||G.players[pi].bankrupt)return;
-  const r1=Math.floor(Math.random()*6)+1,r2=Math.floor(Math.random()*6)+1;
-  const d1=document.getElementById('die1'),d2=document.getElementById('die2');
-  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
-  d1.textContent=faces[r1-1];d2.textContent=faces[r2-1];
-  d1.classList.add('rolling');d2.classList.add('rolling');
-  setTimeout(()=>{d1.classList.remove('rolling');d2.classList.remove('rolling');processRoll(r1,r2,pi);},600);
-}
-function updateTurnBanner(){
-  const p=G.players[G.currentPlayer];
-  const banner=document.getElementById('turn-banner');
-  banner.innerHTML='<span style="color:'+p.color+'">'+p.token+'</span> Ход: '+p.name+(p.isHuman?' <span style="color:var(--color-accent)">← Ваш ход</span>':'');
-  document.getElementById('btn-roll').disabled=!p.isHuman||G.gameOver;
-}
-function updatePlayersList(){
-  const el=document.getElementById('players-list');
-  el.innerHTML=G.players.map((p,i)=>{
-    const ownedProps=Object.keys(G.properties).filter(pos=>G.properties[pos].owner===i).map(pos=>BOARD[parseInt(pos)]);
-    const dots=ownedProps.map(sq=>'<div class="prop-dot" style="background:'+sq.color+';" title="'+sq.name+'"></div>').join('');
-    return '<div class="player-card '+(i===G.currentPlayer?'active-turn':'')+' '+(p.bankrupt?'bankrupt':'')+'">'+
-      '<div class="pc-top"><div class="p-avatar" style="background:'+p.color+'22;border:2px solid '+p.color+'">'+p.token+'</div>'+
-      '<div><div class="p-name" style="color:'+p.color+'">'+p.name+'</div><div class="p-tag">'+(p.isHuman?'Вы':'ИИ')+(p.bankrupt?' · БАНКРОТ':'')+'</div></div></div>'+
-      '<div class="p-money">₽'+p.money.toLocaleString()+'</div>'+
-      '<div class="p-pos">📍 '+BOARD[p.position].name+(p.inJail?' 🔒':'')+'</div>'+
-      '<div class="p-props">'+dots+'</div></div>';
-  }).join('');
-}
-function addLog(text,type=''){
-  const el=document.getElementById('game-log');
-  if(text==='---'){el.insertAdjacentHTML('beforeend','<div style="height:6px;border-bottom:1px solid var(--color-border);margin-bottom:6px"></div>');}
-  else el.insertAdjacentHTML('beforeend','<div class="log-entry '+type+'">'+text+'</div>');
-  el.scrollTop=el.scrollHeight;
-}
-function showBuyModal(pi,pos){
-  const sq=BOARD[pos],p=G.players[pi];
-  openModal('🏠 Купить "'+sq.name+'"?','Цена: ₽'+sq.price+' | У вас: ₽'+p.money,buildPropCard(sq,pos),[
-    {label:'💰 Купить за ₽'+sq.price,cls:'btn-primary',action:()=>{closeModal();buyProperty(pi,pos);}},
-    {label:'❌ Отказаться',cls:'btn-ghost',action:()=>{closeModal();endTurn();}}
-  ]);
-}
-function showBuildModal(pi,pos){
-  const sq=BOARD[pos],prop=G.properties[pos],p=G.players[pi];
-  openModal('🏗️ Построить на "'+sq.name+'"','Домов: '+prop.houses+'/4+отель | ₽'+sq.houseCost+' за дом',buildPropCard(sq,pos),[
-    ...(prop.houses<5&&p.money>=sq.houseCost?[{label:'🏠 Построить дом (₽'+sq.houseCost+')',cls:'btn-primary',action:()=>{prop.houses++;p.money-=sq.houseCost;addLog('🏗️ '+p.name+' строит '+(prop.houses===5?'отель':'дом')+' на "'+sq.name+'"','money');closeModal();drawBoard();updatePlayersList();endTurn();}}]:[]),
-    ...(prop.houses>0?[{label:'🔨 Снести (₽'+Math.floor(sq.houseCost/2)+')',cls:'btn-ghost btn-sm',action:()=>{prop.houses--;p.money+=Math.floor(sq.houseCost/2);closeModal();drawBoard();updatePlayersList();endTurn();}}]:[]),
-    {label:'Готово',cls:'btn-ghost',action:()=>{closeModal();endTurn();}}
-  ]);
-}
-function buildPropCard(sq,pos){
-  const prop=G.properties[pos];
-  const owner=prop.owner!==null?G.players[prop.owner]:null;
-  const color=sq.color||'#888';
-  return '<div class="prop-card"><div class="prop-card-header" style="background:'+color+'"><div>'+sq.name+'</div><div style="font-size:0.8em;opacity:0.9">'+(owner?'Владелец: '+owner.name:'Свободна')+'</div></div><div class="prop-card-body">'+
-    (sq.type==='prop'?'<div class="prop-stat"><span>Цена</span><span class="stat-val">₽'+sq.price+'</span></div><div class="prop-stat"><span>Базовая аренда</span><span class="stat-val">₽'+sq.rent[0]+'</span></div><div class="prop-stat"><span>Монополия</span><span class="stat-val">₽'+sq.rent[0]*2+'</span></div><div class="prop-stat"><span>1 дом</span><span class="stat-val">₽'+sq.rent[1]+'</span></div><div class="prop-stat"><span>4 дома</span><span class="stat-val">₽'+sq.rent[4]+'</span></div><div class="prop-stat"><span>Отель</span><span class="stat-val">₽'+sq.rent[5]+'</span></div><div class="prop-stat"><span>Цена дома</span><span class="stat-val">₽'+sq.houseCost+'</span></div>':
-    sq.type==='railroad'?'<div class="prop-stat"><span>Цена</span><span class="stat-val">₽200</span></div><div class="prop-stat"><span>1 ж/д = ₽25, 2 = ₽50, 3 = ₽100, 4 = ₽200</span><span></span></div>':
-    '<div class="prop-stat"><span>Цена</span><span class="stat-val">₽'+sq.price+'</span></div><div class="prop-stat"><span>1 предприятие</span><span class="stat-val">4×кубики</span></div><div class="prop-stat"><span>2 предприятия</span><span class="stat-val">10×кубики</span></div>')+
-    '</div></div>';
-}
-function showOwnedProperties(){
-  const pi=G.myIndex;
-  const owned=Object.keys(G.properties).filter(pos=>G.properties[pos].owner===pi).map(pos=>({pos:parseInt(pos),sq:BOARD[parseInt(pos)],prop:G.properties[pos]}));
-  if(owned.length===0){toast('У вас нет собственности');return;}
-  const html=owned.map(({pos,sq,prop})=>'<div class="prop-stat"><span>'+(prop.mortgaged?'<span class="mortgage-badge">ЗАЛОГ</span> ':'')+sq.name+(prop.houses>0?(' '+(prop.houses===5?'🏨':'🏠'.repeat(prop.houses))):'')+'</span><span class="stat-val" style="color:'+( sq.color||'#888')+'">₽'+sq.price+'</span></div>').join('');
-  openModal('🏘️ Ваша собственность',owned.length+' объектов',html,[{label:'Закрыть',cls:'btn-ghost',action:closeModal}]);
-}
-function showMortgage(){
-  const pi=G.myIndex;
-  const owned=Object.keys(G.properties).filter(pos=>G.properties[pos].owner===pi).map(pos=>({pos:parseInt(pos),sq:BOARD[parseInt(pos)],prop:G.properties[pos]}));
-  if(owned.length===0){toast('Нет собственности');return;}
-  const html=owned.map(({pos,sq,prop})=>'<div class="prop-stat"><span>'+sq.name+'</span><button class="btn btn-sm '+(prop.mortgaged?'btn-accent':'btn-ghost')+'" onclick="toggleMortgage('+pos+');closeModal();">'+(prop.mortgaged?'Выкупить (₽'+Math.floor(sq.price/2*1.1)+')':'Заложить (₽'+Math.floor(sq.price/2)+')')+'</button></div>').join('');
-  openModal('🏦 Ипотека','Управляйте залогом',html,[{label:'Закрыть',cls:'btn-ghost',action:closeModal}]);
-}
-function toggleMortgage(pos){
-  const pi=G.myIndex,p=G.players[pi],prop=G.properties[pos],sq=BOARD[pos];
-  if(prop.owner!==pi)return;
-  if(prop.mortgaged){const cost=Math.floor(sq.price/2*1.1);if(p.money<cost){toast('Нужно ₽'+cost);return;}p.money-=cost;prop.mortgaged=false;addLog('🏦 '+p.name+' выкупает "'+sq.name+'"','money');}
-  else{prop.mortgaged=true;p.money+=Math.floor(sq.price/2);addLog('🏦 '+p.name+' закладывает "'+sq.name+'"','info');}
-  updatePlayersList();drawBoard();
-}
-function showTrade(){toast('⚠️ Обмен в разработке');}
-function showAllProps(){
-  const html=BOARD.filter(s=>s.type==='prop'||s.type==='railroad'||s.type==='utility').map(sq=>{
-    const prop=G.properties[sq.id];const owner=prop&&prop.owner!==null?G.players[prop.owner]:null;
-    return '<div class="prop-stat"><span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+(sq.color||'#888')+';margin-right:6px"></span>'+sq.name+'</span><span class="stat-val" style="color:'+(owner?owner.color:'var(--color-text-muted)')+'">'+(owner?owner.name:'Свободна')+'</span></div>';
-  }).join('');
-  openModal('📋 Все объекты','',html,[{label:'Закрыть',cls:'btn-ghost',action:closeModal}]);
-}
-function openModal(title,subtitle,content,buttons){
-  document.getElementById('modal-title').textContent=title;
-  document.getElementById('modal-subtitle').textContent=subtitle;
-  document.getElementById('modal-content').innerHTML=content;
-  const footer=document.getElementById('modal-footer');
-  footer.innerHTML='';
-  buttons.forEach(b=>{const btn=document.createElement('button');btn.className='btn '+b.cls;btn.textContent=b.label;btn.onclick=b.action;footer.appendChild(btn);});
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-let toastTimeout;
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.classList.remove('show'),3000);}
-function confirmEndGame(){openModal('🚪 Выйти?','Прогресс будет потерян','',[{label:'Да, выйти',cls:'btn-danger',action:()=>{closeModal();backToLobby();}},{label:'Отмена',cls:'btn-ghost',action:closeModal}]);}
-function backToLobby(){G.gameOver=true;showScreen('lobby');}
-window.addEventListener('resize',()=>{if(document.getElementById('game').classList.contains('active'))drawBoard();});
-document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
-</script>
-</body>
-</html>
+.player-card.active-turn { border-color: var(--color-accent); box-shadow: 0 0 0 1px rgba(232,175,52,0.24) inset; }
+.player-card.bankrupt { opacity: 0.45; filter: grayscale(0.25); }
+.player-card .pc-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.player-card .p-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.player-card .p-name { font-weight: 800; font-size: 0.9rem; line-height: 1.2; }
+.player-card .p-tag  { font-size: 0.72rem; color: var(--color-text-muted); font-weight: 600; }
+.player-card .p-money { font-family: var(--font-display); font-size: 1.15rem; color: var(--color-green); }
+.player-card .p-pos  { font-size: 0.78rem; color: var(--color-text-muted); }
+.player-card .p-props { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
+.prop-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.trade-list, .property-list { display: flex; flex-direction: column; gap: 10px; max-height: 42vh; overflow: auto; padding-right: 4px; }
+.trade-card, .property-row { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px; }
+.trade-card h4, .trade-title { font-size: 0.95rem; margin-bottom: 6px; }
+.trade-meta { color: var(--color-text-muted); font-size: 0.82rem; margin-bott
